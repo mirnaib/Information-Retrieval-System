@@ -1,90 +1,227 @@
 # IRMaster
-# System Services
+
+Information Retrieval System based on TF-IDF, Vector Space Model (VSM), Cosine Similarity, Query Expansion, Voice Search, and Multilingual Retrieval.
+
+## Team Members
+
+* اسراء محمد خير يوسف
+* آية حسين هزاع حال أحمد سعادة
+* غدير عبد الرحمن دبس
+
+### Supervisor
+
+* Eng. Lin Qwaider
+
+---
+
 # Project Overview
 
-## Dataset Description
+This project implements an Information Retrieval System capable of retrieving relevant documents from large datasets using text or voice queries. The system supports multilingual retrieval and provides ranking based on cosine similarity over TF-IDF document representations.
 
-### Antique
-- **Documents**: 404K (text, id)
-- **Queries**: 2.4K (id, query)
-- **Qrels**: 27K (query_id, doc_id, relevance, iteration)
+---
 
-### Wikir/en1k
-- **Documents**: 370K (text, id)
-- **Queries**: 48K (id, query)
-- **Qrels**: 48K (query_id, doc_id, relevance, iteration)
+# Datasets
 
-## Preprocessing Steps
+## Antique
 
-1. **Expand Words**: Use `contractions` to expand abbreviations.
-2. **Tokenize Words**: Use `word_tokenize` to split text into tokens.
-3. **Remove Punctuation**
-4. **Normalization**:
-   - Standardize dates using `dateutil.parser`.
-   - Convert numbers to words using `num2word`.
-   - Expand abbreviations (terms, countries, states) using a predefined dictionary.
-   - Standardize American and British spellings using a predefined dictionary.
-   - Convert Unicode to ASCII using `anyascii`.
-5. **Stemming**: Remove prefixes and suffixes using `PorterStemmer`.
-6. **Part of Speech Tagging**: Identify grammatical categories for use in lemmatization.
-7. **Lemmatization**: Convert words to their root forms using `WordNetLemmatizer`.
-8. **Stop Words Removal**
+* Documents: 404K
+* Queries: 2.4K
+* Qrels: 27K
 
-## Data Representation & Indexing
+Structure:
 
-- **TF-IDF**: Using `sklearn` to create a vector space model.
-  - **Parameters**:
-    - `sublinear_tf=True`
-    - `norm='l2'`
-    - `max_df=0.9`
+* Document → (id, text)
+* Query → (id, query)
+* Qrel → (query_id, doc_id, relevance, iteration)
 
-## Query Processing
+## Wikir/en1k
 
-- Apply the same preprocessing steps to the query.
+* Documents: 370K
+* Queries: 48K
+* Qrels: 48K
 
-## Query Matching & Ranking
+Structure:
 
-- Represent the query as a vector.
-- Use `cosine_similarity` to match the query with document vectors and rank them.
+* Document → (id, text)
+* Query → (id, query)
+* Qrel → (query_id, doc_id, relevance, iteration)
 
-## Evaluation Metrics
+---
 
-- **Precision at k**: Precision of the top k retrieved documents.
-- **Recall at k**: Recall of the top k retrieved documents.
-- **Mean Average Precision (MAP)**
-- **Mean Reciprocal Rank (MRR)**
+# Preprocessing Pipeline
 
-## Results
+The following preprocessing operations are applied to both documents and queries:
 
-### Antique Dataset
-- **MAP**: 0.14731879736223874
-- **MRR**: 0.08120193050879908
-- **mean_precision_10**:0.0304204451772465
-- **mean_recal**:0.11765890734283808
+1. Contraction Expansion
+2. Tokenization
+3. Punctuation Removal
+4. Text Normalization
 
-### Antique Dataset after clustering
-- **MAP**: 0.5787161922272746
-- **MRR**:  0.2408775958858399
-- **mean_precision_10**:0.07061005770816159
-- **mean_recal**:, 0.11765890734283808
+   * Date normalization
+   * Number normalization
+   * Acronym expansion
+   * British/American spelling normalization
+   * Unicode to ASCII conversion
+5. Stemming using PorterStemmer
+6. POS Tagging
+7. Lemmatization using WordNetLemmatizer
+8. Stop Words Removal
 
-### Wikir/en1k Dataset
-- **MAP**: 0.5404
-- **MRR**: 0.6094
+---
 
-## Additional Features
+# Data Representation & Indexing
 
-- **Multi-Lingual Retrieval System**: Uses Google Translator to handle Arabic queries and return results in the same language.
+The system uses a Vector Space Model (VSM) with TF-IDF weighting.
 
-1. **Voice Search and Retrieval**: The system supports searching and retrieving results through voice input.
-2. **Dataset Switching**: The ability to switch datasets through the user interface.
-3. **Language Switching**: The ability to switch languages through the user interface and to search by either text or voice in both Arabic and English, with results returned in the same language as the search was conducted.
+TF-IDF Parameters:
 
-# System Structure Description
+* sublinear_tf = True
+* norm = "l2"
+* max_df = 0.9
 
-1. The process starts with reading from a file, and the result of the reading is stored in a variable.
-2. The text in this variable undergoes processing, followed by stemming to improve the accuracy of the results.
-3. Lemmatization is then applied.
-4. Different expressions are found and appropriate replacements are made using a dictionary.
-5. The tf-idf matrix is prepared, representing documents as vectors, and the query is also represented as a vector to calculate the similarity between them.
+---
 
+# Query Processing
+
+Queries undergo the same preprocessing pipeline as documents before retrieval.
+
+---
+
+# Query Matching & Ranking
+
+1. Convert documents into TF-IDF vectors.
+2. Convert query into a TF-IDF vector.
+3. Compute cosine similarity between the query and all documents.
+4. Rank documents in descending order.
+5. Return the Top-K most relevant documents.
+
+---
+
+# Evaluation Metrics
+
+The following evaluation measures are used:
+
+* Precision@10
+* Recall@10
+* Mean Average Precision (MAP)
+* Mean Reciprocal Rank (MRR)
+
+---
+
+# Results
+
+## Antique Dataset
+
+| Metric       | Value  |
+| ------------ | ------ |
+| MAP          | 0.1473 |
+| MRR          | 0.0812 |
+| Precision@10 | 0.0304 |
+| Recall@10    | 0.1177 |
+
+## Antique Dataset (After Clustering)
+
+| Metric       | Value  |
+| ------------ | ------ |
+| MAP          | 0.5787 |
+| MRR          | 0.2409 |
+| Precision@10 | 0.0706 |
+| Recall@10    | 0.1177 |
+
+### Observation
+
+Applying clustering significantly improved retrieval performance, especially MAP and MRR.
+
+## Wikir/en1k Dataset
+
+| Metric | Value  |
+| ------ | ------ |
+| MAP    | 0.5404 |
+| MRR    | 0.6094 |
+
+---
+
+# Additional Features
+
+## Multilingual Retrieval
+
+Arabic queries are translated into English before retrieval and translated back to Arabic after retrieving results.
+
+Google Translator API is used for translation.
+
+## Voice Search
+
+Users can search using voice input.
+
+## Dataset Switching
+
+Users can switch between available datasets from the interface.
+
+## Language Switching
+
+Users can perform searches in Arabic or English using either text or voice input.
+
+---
+
+# System Architecture
+
+1. Read documents from dataset files.
+2. Apply preprocessing operations.
+3. Perform stemming and lemmatization.
+4. Normalize and standardize text.
+5. Build the TF-IDF matrix.
+6. Represent documents and queries as vectors.
+7. Compute cosine similarity.
+8. Rank and retrieve the most relevant documents.
+
+---
+
+# User Interface
+
+Add screenshots inside the screenshots folder and display them here.
+
+## Main Interface
+
+![Home](screenshots/home.png)
+
+## Search Results
+
+![Results](screenshots/results.png)
+
+---
+
+# Technologies Used
+
+* Python
+* NLTK
+* Scikit-Learn
+* NumPy
+* Pandas
+* Contractions
+* Num2Words
+* DateUtil
+* AnyAscii
+* Google Translator
+
+---
+
+# Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+# References
+
+* GeeksForGeeks
+* GitHub
+* Real Python
+* ChatGPT
+
+---
+
+# Project Report
+
+The full project report is available in the docs folder.
