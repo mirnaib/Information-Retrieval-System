@@ -1,0 +1,11 @@
+nltk
+scikit-learn
+numpy
+pandas
+contractions
+num2words
+python-dateutil
+anyascii
+deep-translator
+speechrecognition
+pyaudio
