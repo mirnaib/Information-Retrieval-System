@@ -2,16 +2,6 @@
 
 Information Retrieval System based on TF-IDF, Vector Space Model (VSM), Cosine Similarity, Query Expansion, Voice Search, and Multilingual Retrieval.
 
-## Team Members
-
-* اسراء محمد خير يوسف
-* آية حسين هزاع حال أحمد سعادة
-* غدير عبد الرحمن دبس
-
-### Supervisor
-
-* Eng. Lin Qwaider
-
 ---
 
 # Project Overview
